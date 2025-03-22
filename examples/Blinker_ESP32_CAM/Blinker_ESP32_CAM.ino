@@ -44,12 +44,14 @@
  * *****************************************************************/
 
 #define BLINKER_WIFI
-#define BLINKER_ESP_SMARTCONFIG
+//#define BLINKER_ESP_SMARTCONFIG
 
 #include <Blinker.h>
 #include "ESP32_CAM_SERVER.h"
 
-char auth[] = "Your Device Secret Key";
+char auth[] = "23c5f96de174";
+char ssid[] = "Xiaomi_07A8";
+char pswd[] = "xyy13482204510.";
 bool setup_camera = false;
 
 void dataRead(const String & data)
@@ -71,17 +73,18 @@ void setup()
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWrite(LED_BUILTIN, LOW);
     
-    Blinker.begin(auth);
+    Blinker.begin(auth,ssid,pswd);
     Blinker.attachData(dataRead);
 }
 
 void loop()
 {
     Blinker.run();
-
     if (Blinker.connected() && !setup_camera)
     {
+        Serial.println("setupCamera start");
         setupCamera();
+        Serial.println("setupCamera end");
         setup_camera = true;
 
         Blinker.printObject("video", "{\"str\":\"mjpg\",\"url\":\"http://"+ WiFi.localIP().toString() + "\"}");
